@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div id="usuarios">
+
+</div>
+<script>
+
+    "use strict";
+
+    //let url = 'ws://echo.websocket.org';
+    let url = 'ws://localhost:8080';
+    let client = new WebSocket(url);
+    let users = [];
+    client.onopen = function (event) {
+
+        client.send(JSON.stringify({event:"MONITOR"}));
+
+        client.onmessage = function (event) {
+
+            let json = JSON.parse(event.data);
+            console.log(json);
+            switch (json.event) {
+                case "NEW":
+                    users.push(json.id);
+                    renderUser();
+                    break;
+                case "MONITOR":
+                    console.log(json)
+                    break;
+
+            }
+        };
+
+        client.onclose = function (event) {
+            console.log("PERDIO CONEXION <br>" + msj.innerHTML);
+
+            console.log('Client notified socket has closed\n', event);
+        };
+
+    };
+
+    function renderUser(){
+        let html = '';
+        for(let user of users){
+            html += `<p>${user}</p>`
+        }
+        document.getElementById("usuarios").innerHTML = html;
+
+    }
+
+
+
+</script>
+</body>
+</html>
